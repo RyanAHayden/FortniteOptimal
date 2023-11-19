@@ -1,110 +1,72 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FortniteOptimal
 {
-    internal class Config
+    public class Config
     {
+        private const string ConfigFileName = "config.json";
+
         public int AutoLaunch { get; set; }
         public int AutoClose { get; set; }
         public int UseCustomSettings { get; set; }
         public int UseCustomPrograms { get; set; }
-        public string Program { get; set; }
-        //private string configFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.ini";
-        //private string configFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.json";
+        public List<string> Programs { get; set; } = new List<string>();
+
+        private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
+
         public Config()
         {
-            // Create a configuration builder
-            var configurationBuilder = new ConfigurationBuilder();
 
-            //// Set the base path to the location of your appsettings.json file
-            //configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
-            //
-            //// Add the appsettings.json file
-            //configurationBuilder.AddJsonFile("config.json", optional: false, reloadOnChange: true);
-
-            var configFilePath = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
-            configurationBuilder.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
-
-
-            // Build the configuration
-            string configFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.json";
-            if (!File.Exists(configFile))
+            // Make sure config file exists, if not, create it.
+            if (!File.Exists(configFilePath))
             {
-                CreateDefaultConfig(configFile);
+                CreateDefaultConfig(configFilePath);
             }
-            var configuration = configurationBuilder.Build();
 
-            // Create an instance of AppSettings and bind the configuration values to it
-            var appSettings = new Config();
-            configuration.GetSection("Config").Bind(appSettings);
+            // Load configuration from the file
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
+                .Build();
 
-            // Update the values if needed
-            appSettings.AutoLaunch = 1;
-            appSettings.AutoClose = 1;
-            appSettings.UseCustomSettings = 1;
-            appSettings.UseCustomPrograms = 1;
-            appSettings.Program = "New program path";
-
-            // Save the updated values back to the configuration file
-            configuration.GetSection("Config").Bind(appSettings);
-            configurationBuilder.AddJsonFile("Config.json", optional: false, reloadOnChange: true);
-
-
-            ////var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("config.json").Build();
-            //// Create config
-            //if (!File.Exists(configFile))
-            //{
-            //    using (FileStream fs = File.Create(configFile)) { }
-            //}
-            //else
-            //{
-            //
-            //    // Read the dictionary from the INI file
-            //    //configValues = ReadDictionaryFromIni(configFile);
-            //}
-            // if (configValues.Count > 0)
-            // {
-            //     CheckValues();
-            // }
-            // if (CheckValue("AutoLaunch")) // Launch the program instantly if AutoLaunch = 1
-            // {
-            //     EpicGamesLauncher.Launch();
-            //     if (CheckValue("AutoClose")) // Close the program instantly if AutoClose = 1
-            //     {
-            //         Load += (s, e) => Close();
-            //     }
-            // }
-            
+            // Bind configuration values to the properties of the Config class
+            configuration.GetSection("Config").Bind(this);
         }
-        private void CreateDefaultConfig(string configFilePath)
+        private static void CreateDefaultConfig(string configFilePath)
         {
-            // Create a default configuration object
-            var defaultConfig = new Config
+            // Create a default configuration object without causing recursion
+            var defaultConfig = new DefaultConfig
             {
                 AutoLaunch = 0,
                 AutoClose = 0,
                 UseCustomSettings = 0,
                 UseCustomPrograms = 0,
-                Program = ""
+                Programs = new List<string>()
             };
 
             // Serialize the default configuration to JSON and write it to the file
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(defaultConfig, Newtonsoft.Json.Formatting.Indented);
+            var json = JsonConvert.SerializeObject(defaultConfig, Formatting.Indented);
+            File.WriteAllText(configFilePath, json);
+        }
+        public void Save()
+        {
+            // Serialize the current configuration to JSON
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+
+            // Write the JSON to the config file
             File.WriteAllText(configFilePath, json);
         }
 
-        //private void ReadValues()
-        //{
-        //    if (File.Exists(configFile))
-        //    {
-        //
-        //    }
-        //}
+        private class DefaultConfig
+        {
+            public int AutoLaunch { get; set; }
+            public int AutoClose { get; set; }
+            public int UseCustomSettings { get; set; }
+            public int UseCustomPrograms { get; set; }
+            public List<string> Programs { get; set; }
+        }
     }
 }
