@@ -12,35 +12,33 @@ namespace FortniteOptimal
         private Dictionary<string, int> configValues = new();
         private Dictionary<string, CheckBox> configValueCheckBoxes = new();
 
+        private string fortniteConfigLocation = @"C:\" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + @"\Administrator\AppData\Local\FortniteGame\Saved\Config\WindowsClient";
+
         public frmOptimal()
         {
             InitializeComponent();
 
-            // Create config
-            if (!File.Exists(config)) { using (FileStream fs = File.Create(config)) { } }
-            else
-            {
-                // Read the dictionary from the INI file
-                configValues = ReadDictionaryFromIni(config);
-            }
-            if (configValues.Count > 0)
-            {
-                CheckValues();
-            }
-           //    if (configValues["AutoLaunch"] == 1)
-           //    {
-           //        chkLaunch.Checked = true;
-           //        EpicGamesLauncher.Launch();
-           //    }
-           //}
-            /*if (chkLaunch.Checked == true)
-            {
-                EpicGamesLauncher.Launch();
-            }
-            if (chkClose.Checked == true)
-            {
-                this.Close();
-            }*/
+            //Config config = new();
+
+           // Create config
+           if (!File.Exists(config)) { using (FileStream fs = File.Create(config)) { } }
+           else
+           {
+               // Read the dictionary from the INI file
+               configValues = ReadDictionaryFromIni(config);
+           }
+           if (configValues.Count > 0)
+           {
+               CheckValues();
+           }
+           if (CheckValue("AutoLaunch")) // Launch the program instantly if AutoLaunch = 1
+           {
+               EpicGamesLauncher.Launch();
+               if (CheckValue("AutoClose")) // Close the program instantly if AutoClose = 1
+               {
+                   Load += (s, e) => Close();
+               }
+           }
         }
 
         private void CheckValues()
@@ -49,34 +47,59 @@ namespace FortniteOptimal
             {
                 if (configValues[key] == 1)
                 {
-                    ValueToCheckBox(key);
+                    if (ValueToCheckBox(key) != null)
+                    {
+                        //if (ValueToCheckBox(key) == chkLaunch) { System.Threading.Thread.Sleep(1000); this.Close(); }
+                        ValueToCheckBox(key).Checked = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unknown setting in config.ini: \n" + key + "\nIgnoring.", "Config Error");
+                        continue;
+                    }
                     //configValueCheckBoxes[key].Checked = true;
                     //chkLaunch.Checked = true; // FIX, make a second dictionary that maps names to checkboxes
                     //EpicGamesLauncher.Launch();
                 }
             }
         }
-        private void ValueToCheckBox(string key)
+        private bool CheckValue(string value) // Returns whether a value in the config is 1 or 0
         {
-
+            foreach (string key in configValues.Keys)
+            {
+                if (key == value)
+                {
+                    if (configValues[key] == 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            MessageBox.Show("Value not found: " + value, "Check Value Error");
+            return false;
         }
-        //private void SetValues(string valueName, bool chkBoxStatus)
-        //{
-        //    if (chkBoxStatus == true)
-        //    {
-        //        if (!configValues.ContainsKey(valueName)) { configValues.Add(valueName, 1); }
-        //        else { configValues[valueName] = 1; }
-        //    }
-        //    else
-        //    {
-        //        if (!configValues.ContainsKey(valueName)) { configValues.Add(valueName, 0); }
-        //        else { configValues[valueName] = 0; }
-        //    }
-        //    WriteDictionaryToIni(configValues, config);
-        //}
+        private CheckBox? ValueToCheckBox(string key) // Table matching Values from the config to their checkboxes
+        {
+            switch (key)
+            {
+                case "AutoClose":
+                    return chkClose;
+                case "AutoLaunch":
+                    return chkLaunch;
+                case "UseCustomSettings":
+                    return chkCustomSettings;
+                case "UseCustomPrograms":
+                    return chkCustomPrograms;
+                default:
+                    return null;
+            }
+        }
         private void SetValues(string valueName, CheckBox chkBox)
         {
-            // Add dictionary checkbox link
             if (!configValueCheckBoxes.ContainsKey(valueName)) { configValueCheckBoxes.Add(valueName, chkBox); }
 
             if (chkBox.Checked == true)
@@ -92,13 +115,34 @@ namespace FortniteOptimal
             WriteDictionaryToIni(configValues, config);
         }
 
-        private void btnLaunch_Click(object sender, EventArgs e)
+        private void btnLaunch_Click(object sender = null, EventArgs e = null)
         {
+            if (chkCustomSettings.Checked == true)
+            {
+                string selectedConfig = lstConfig.Text;
+                if (selectedConfig != string.Empty)
+                {
+                    //MessageBox.Show(selectedConfig, "");
+
+                    string selectedConfigLocation = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\" + selectedConfig + "\\";
+                    //C:\Users\Administrator\AppData\Local\FortniteGame\Saved\Config\WindowsClient
+
+                }
+                else
+                {
+                    MessageBox.Show("No Config Selected!", "Error");
+                    return;
+                }
+            }
             EpicGamesLauncher.Launch();
-            if (chkClose.Checked == true)
+            if (CheckValue("AutoClose"))
             {
                 this.Close();
             }
+            //if (chkClose.Checked == true)
+            //{
+            //    this.Close();
+            //}
         }
 
         private void chkLaunch_CheckedChanged(object sender, EventArgs e)
@@ -152,7 +196,6 @@ namespace FortniteOptimal
         private void chkCustomSettings_CheckedChanged(object sender, EventArgs e)
         {
             SetValues("UseCustomSettings", chkCustomSettings);
-            //if (chkCustomSettings.Checked) { configValues.Add("chkCustomSettings", 1); }
             try
             {
                 string gameUsr = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\GameUserSettings\";
@@ -188,6 +231,24 @@ namespace FortniteOptimal
             if (!chkCustomSettings.Checked)
                 lstConfig.Items.Clear();
         }
+        private void chkCustomPrograms_CheckedChanged(object sender, EventArgs e)
+        {
+            //
+            SetValues("UseCustomPrograms", chkCustomPrograms);
+        }
+        private void btnCustomProgramsAdd_Click(object sender, EventArgs e)
+        {
+            // Use a function to add the text in textbox (if its not null) to a seperate config exclusively for launching custom programs
+        }
 
+        private void btnCustomProgramsRemove_Click(object sender, EventArgs e)
+        {
+            // remove selected program in custom program list
+        }
+
+        private void lstConfig_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //lstConfig.Text
+        }
     }
 }
