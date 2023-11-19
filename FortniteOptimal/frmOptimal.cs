@@ -18,7 +18,7 @@ namespace FortniteOptimal
         {
             InitializeComponent();
 
-            //Config config = new();
+            Config configReal = new();
 
            // Create config
            if (!File.Exists(config)) { using (FileStream fs = File.Create(config)) { } }
