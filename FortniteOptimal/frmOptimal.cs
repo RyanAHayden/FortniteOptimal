@@ -21,11 +21,37 @@ namespace FortniteOptimal
         {
             InitializeComponent();
 
-            
+            // test make more optimal v
+
+            if (config.UseCustomPrograms == 1)
+            {
+                chkCustomPrograms.Checked = true;
+            }
 
             //config.AutoLaunch = 1;
 
         }
+
+        // start here
+        private void SetValuesToConfig()
+        {
+            if (config.UseCustomPrograms == 1)
+            {
+                chkCustomPrograms.Checked = true;
+            }
+        }
+
+        //
+       // private CheckBox? CheckValue(int value)
+       // {
+       //     switch (value)
+       //     {
+       //         case :
+       //             return chkCustomPrograms;
+       //         default:
+       //             return null;
+       //     }
+       // }
         private void btnLaunch_Click(object sender = null, EventArgs e = null)
         {
             if (chkCustomSettings.Checked == true)
@@ -53,6 +79,7 @@ namespace FortniteOptimal
         private void chkClose_CheckedChanged(object sender, EventArgs e)
         {
             //SetValues("AutoClose", chkClose);
+
         }
         private void chkCustomSettings_CheckedChanged(object sender, EventArgs e)
         {
@@ -94,6 +121,19 @@ namespace FortniteOptimal
         }
         private void chkCustomPrograms_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkCustomPrograms.Checked)
+            {
+                config.UseCustomPrograms = 1;
+                config.Save();
+                lstCustomPrograms.Enabled = true;
+            }
+            else
+            {
+                config.UseCustomPrograms = 0;
+                config.Save();
+                lstCustomPrograms.Items.Clear();
+                lstCustomPrograms.Enabled = false;
+            }
             //
             //SetValues("UseCustomPrograms", chkCustomPrograms);
         }
@@ -104,17 +144,14 @@ namespace FortniteOptimal
 
             // Add a custom program to the list
             config.Programs.Add(txtCustomPrograms.Text);
-
-            // Save the updated configuration
             config.Save();
-
-            // Clear the ListBox
             lstCustomPrograms.Items.Clear();
+            txtCustomPrograms.Clear();
 
             // Populate the ListBox with the updated list of programs
             foreach (string program in config.Programs)
             {
-                lstConfig.Items.Add(program);
+                lstCustomPrograms.Items.Add(program);
             }
 
             // config.Programs.Add(txtCustomPrograms.Text);
@@ -129,6 +166,10 @@ namespace FortniteOptimal
 
         private void btnCustomProgramsRemove_Click(object sender, EventArgs e)
         {
+            string selectedProgram = lstCustomPrograms.Text;
+            lstCustomPrograms.Items.Remove(selectedProgram);
+            config.Programs.Remove(selectedProgram);
+            config.Save();
             // remove selected program in custom program list
         }
 

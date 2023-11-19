@@ -19,22 +19,30 @@ namespace FortniteOptimal
 
         public Config()
         {
+            LoadConfig();
+        }
 
-            // Make sure config file exists, if not, create it.
-            if (!File.Exists(configFilePath))
+        private void LoadConfig()
+        {
+            // Check if the config file exists
+            if (File.Exists(configFilePath))
             {
+                // Load configuration from the file
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
+                    .Build();
+
+                // Bind configuration values to the properties of the Config class
+                configuration.Bind(this);
+            }
+            else
+            {
+                // If the config file doesn't exist, create a default one
                 CreateDefaultConfig(configFilePath);
             }
-
-            // Load configuration from the file
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
-                .Build();
-
-            // Bind configuration values to the properties of the Config class
-            configuration.GetSection("Config").Bind(this);
         }
+
         private static void CreateDefaultConfig(string configFilePath)
         {
             // Create a default configuration object without causing recursion
