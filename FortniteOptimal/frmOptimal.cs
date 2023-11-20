@@ -21,8 +21,6 @@ namespace FortniteOptimal
             InitializeComponent();
             SetValuesToConfig();
         }
-
-        // start here
         private void SetValuesToConfig()
         {
             if (config.AutoLaunch == 1)
@@ -206,7 +204,7 @@ namespace FortniteOptimal
                     }
                     else
                     {
-                        MessageBox.Show("No .ini files found in the directory.");
+                        MessageBox.Show(@"No .ini files found in the directory: ..\GameUserSettings\", "Custom Settings Error");
                     }
                 }
                 catch (Exception ex)

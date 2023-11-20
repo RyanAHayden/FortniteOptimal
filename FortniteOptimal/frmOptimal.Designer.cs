@@ -99,7 +99,7 @@
             grpCustomSettings.Controls.Add(chkCustomSettings);
             grpCustomSettings.FlatStyle = FlatStyle.Flat;
             grpCustomSettings.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            grpCustomSettings.Location = new Point(3, 109);
+            grpCustomSettings.Location = new Point(3, 147);
             grpCustomSettings.MaximumSize = new Size(200, 160);
             grpCustomSettings.MinimumSize = new Size(200, 0);
             grpCustomSettings.Name = "grpCustomSettings";
@@ -120,7 +120,7 @@
             grpGame.ForeColor = SystemColors.ControlText;
             grpGame.Location = new Point(3, 3);
             grpGame.Name = "grpGame";
-            grpGame.Size = new Size(200, 100);
+            grpGame.Size = new Size(200, 138);
             grpGame.TabIndex = 0;
             grpGame.TabStop = false;
             grpGame.Text = "Game";
@@ -130,7 +130,7 @@
             btnClose.BackColor = Color.Red;
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnClose.Location = new Point(6, 71);
+            btnClose.Location = new Point(6, 52);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(188, 25);
             btnClose.TabIndex = 3;
@@ -156,7 +156,7 @@
             chkLaunch.AutoSize = true;
             chkLaunch.FlatStyle = FlatStyle.Flat;
             chkLaunch.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
-            chkLaunch.Location = new Point(6, 48);
+            chkLaunch.Location = new Point(6, 83);
             chkLaunch.Name = "chkLaunch";
             chkLaunch.Size = new Size(114, 21);
             chkLaunch.TabIndex = 1;
@@ -169,11 +169,11 @@
             chkClose.AutoSize = true;
             chkClose.FlatStyle = FlatStyle.Flat;
             chkClose.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
-            chkClose.Location = new Point(136, 48);
+            chkClose.Location = new Point(6, 110);
             chkClose.Name = "chkClose";
-            chkClose.Size = new Size(58, 21);
+            chkClose.Size = new Size(146, 21);
             chkClose.TabIndex = 2;
-            chkClose.Text = "Hide";
+            chkClose.Text = "Auto-Close FNOP";
             chkClose.UseVisualStyleBackColor = true;
             chkClose.CheckedChanged += chkClose_CheckedChanged;
             // 
@@ -181,13 +181,14 @@
             // 
             flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flowLayoutPanel1.AutoSize = true;
+            flowLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flowLayoutPanel1.Controls.Add(grpGame);
             flowLayoutPanel1.Controls.Add(grpCustomSettings);
             flowLayoutPanel1.Controls.Add(grpCustomPrograms);
             flowLayoutPanel1.Controls.Add(grpKillProcesses);
             flowLayoutPanel1.Location = new Point(12, 11);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(222, 640);
+            flowLayoutPanel1.Size = new Size(206, 678);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // grpCustomPrograms
@@ -200,7 +201,7 @@
             grpCustomPrograms.Controls.Add(txtCustomPrograms);
             grpCustomPrograms.Controls.Add(chkCustomPrograms);
             grpCustomPrograms.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            grpCustomPrograms.Location = new Point(3, 247);
+            grpCustomPrograms.Location = new Point(3, 285);
             grpCustomPrograms.MinimumSize = new Size(200, 0);
             grpCustomPrograms.Name = "grpCustomPrograms";
             grpCustomPrograms.Size = new Size(200, 192);
@@ -260,7 +261,7 @@
             grpKillProcesses.Controls.Add(lstKillProcesses);
             grpKillProcesses.Controls.Add(txtKillProcesses);
             grpKillProcesses.Controls.Add(chkKillProcesses);
-            grpKillProcesses.Location = new Point(3, 445);
+            grpKillProcesses.Location = new Point(3, 483);
             grpKillProcesses.MinimumSize = new Size(200, 0);
             grpKillProcesses.Name = "grpKillProcesses";
             grpKillProcesses.Size = new Size(200, 192);
@@ -323,11 +324,11 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 18F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(232, 653);
+            ClientSize = new Size(232, 671);
             Controls.Add(flowLayoutPanel1);
             Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MaximizeBox = false;
-            MinimumSize = new Size(250, 160);
+            MinimumSize = new Size(250, 0);
             Name = "frmOptimal";
             ShowIcon = false;
             Text = "FNOP";
