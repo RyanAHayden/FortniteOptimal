@@ -1,58 +1,83 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FortniteOptimal
 {
-    internal class Config
+    public class Config
     {
+        private const string ConfigFileName = "config.json";
+
         public int AutoLaunch { get; set; }
         public int AutoClose { get; set; }
         public int UseCustomSettings { get; set; }
+        public string? CustomSetting { get; set; }
         public int UseCustomPrograms { get; set; }
-        public string Program { get; set; }
-        //private string configFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.ini";
-        //private string configFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.json";
+        public List<string>? Programs { get; set; } = new List<string>();
+
+        private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
+
         public Config()
         {
-
-
-            ////var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("config.json").Build();
-            //// Create config
-            //if (!File.Exists(configFile))
-            //{
-            //    using (FileStream fs = File.Create(configFile)) { }
-            //}
-            //else
-            //{
-            //
-            //    // Read the dictionary from the INI file
-            //    //configValues = ReadDictionaryFromIni(configFile);
-            //}
-            // if (configValues.Count > 0)
-            // {
-            //     CheckValues();
-            // }
-            // if (CheckValue("AutoLaunch")) // Launch the program instantly if AutoLaunch = 1
-            // {
-            //     EpicGamesLauncher.Launch();
-            //     if (CheckValue("AutoClose")) // Close the program instantly if AutoClose = 1
-            //     {
-            //         Load += (s, e) => Close();
-            //     }
-            // }
+            LoadConfig();
         }
 
-        //private void ReadValues()
-        //{
-        //    if (File.Exists(configFile))
-        //    {
-        //
-        //    }
-        //}
+        private void LoadConfig()
+        {
+            // Check if the config file exists
+            if (File.Exists(configFilePath))
+            {
+                // Load configuration from the file
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
+                    .Build();
+
+                // Bind configuration values to the properties of the Config class
+                configuration.Bind(this);
+            }
+            else
+            {
+                // If the config file doesn't exist, create a default one
+                CreateDefaultConfig(configFilePath);
+            }
+        }
+
+        private static void CreateDefaultConfig(string configFilePath)
+        {
+            // Create a default configuration object without causing recursion
+            var defaultConfig = new DefaultConfig
+            {
+                AutoLaunch = 0,
+                AutoClose = 0,
+                UseCustomSettings = 0,
+                CustomSetting = "",
+                UseCustomPrograms = 0,
+                Programs = new List<string>()
+            };
+
+            // Serialize the default configuration to JSON and write it to the file
+            var json = JsonConvert.SerializeObject(defaultConfig, Formatting.Indented);
+            File.WriteAllText(configFilePath, json);
+        }
+        public void Save()
+        {
+            // Serialize the current configuration to JSON
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+
+            // Write the JSON to the config file
+            File.WriteAllText(configFilePath, json);
+        }
+
+        private class DefaultConfig
+        {
+            public int AutoLaunch { get; set; }
+            public int AutoClose { get; set; }
+            public int UseCustomSettings { get; set; }
+            public string? CustomSetting { get; set; }
+            public int UseCustomPrograms { get; set; }
+            public List<string>? Programs { get; set; }
+        }
     }
 }
