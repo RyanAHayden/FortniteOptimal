@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             lstConfig = new ListBox();
             chkCustomSettings = new CheckBox();
             chkCustomPrograms = new CheckBox();
@@ -49,6 +50,7 @@
             lstKillProcesses = new ListBox();
             txtKillProcesses = new TextBox();
             chkKillProcesses = new CheckBox();
+            toolTip1 = new ToolTip(components);
             grpCustomSettings.SuspendLayout();
             grpGame.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -60,10 +62,9 @@
             // 
             lstConfig.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             lstConfig.FormattingEnabled = true;
-            lstConfig.ItemHeight = 15;
             lstConfig.Location = new Point(6, 44);
             lstConfig.Name = "lstConfig";
-            lstConfig.Size = new Size(188, 64);
+            lstConfig.Size = new Size(188, 56);
             lstConfig.TabIndex = 1;
             lstConfig.SelectedIndexChanged += lstConfig_SelectedIndexChanged;
             // 
@@ -74,7 +75,7 @@
             chkCustomSettings.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             chkCustomSettings.Location = new Point(6, 21);
             chkCustomSettings.Name = "chkCustomSettings";
-            chkCustomSettings.Size = new Size(178, 21);
+            chkCustomSettings.Size = new Size(137, 17);
             chkCustomSettings.TabIndex = 0;
             chkCustomSettings.Text = "Use Custom Settings";
             chkCustomSettings.UseVisualStyleBackColor = true;
@@ -86,7 +87,7 @@
             chkCustomPrograms.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             chkCustomPrograms.Location = new Point(6, 21);
             chkCustomPrograms.Name = "chkCustomPrograms";
-            chkCustomPrograms.Size = new Size(150, 21);
+            chkCustomPrograms.Size = new Size(116, 17);
             chkCustomPrograms.TabIndex = 0;
             chkCustomPrograms.Text = "Launch Programs";
             chkCustomPrograms.UseVisualStyleBackColor = true;
@@ -99,11 +100,11 @@
             grpCustomSettings.Controls.Add(chkCustomSettings);
             grpCustomSettings.FlatStyle = FlatStyle.Flat;
             grpCustomSettings.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            grpCustomSettings.Location = new Point(3, 147);
+            grpCustomSettings.Location = new Point(3, 116);
             grpCustomSettings.MaximumSize = new Size(200, 160);
             grpCustomSettings.MinimumSize = new Size(200, 0);
             grpCustomSettings.Name = "grpCustomSettings";
-            grpCustomSettings.Size = new Size(200, 132);
+            grpCustomSettings.Size = new Size(200, 121);
             grpCustomSettings.TabIndex = 1;
             grpCustomSettings.TabStop = false;
             grpCustomSettings.Text = "Custom Settings";
@@ -120,7 +121,7 @@
             grpGame.ForeColor = SystemColors.ControlText;
             grpGame.Location = new Point(3, 3);
             grpGame.Name = "grpGame";
-            grpGame.Size = new Size(200, 138);
+            grpGame.Size = new Size(200, 107);
             grpGame.TabIndex = 0;
             grpGame.TabStop = false;
             grpGame.Text = "Game";
@@ -158,7 +159,7 @@
             chkLaunch.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             chkLaunch.Location = new Point(6, 83);
             chkLaunch.Name = "chkLaunch";
-            chkLaunch.Size = new Size(114, 21);
+            chkLaunch.Size = new Size(89, 17);
             chkLaunch.TabIndex = 3;
             chkLaunch.Text = "Auto-Launch";
             chkLaunch.UseVisualStyleBackColor = true;
@@ -169,11 +170,11 @@
             chkClose.AutoSize = true;
             chkClose.FlatStyle = FlatStyle.Flat;
             chkClose.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
-            chkClose.Location = new Point(6, 110);
+            chkClose.Location = new Point(111, 83);
             chkClose.Name = "chkClose";
-            chkClose.Size = new Size(146, 21);
+            chkClose.Size = new Size(83, 17);
             chkClose.TabIndex = 4;
-            chkClose.Text = "Auto-Close FNOP";
+            chkClose.Text = "Auto-Close";
             chkClose.UseVisualStyleBackColor = true;
             chkClose.CheckedChanged += chkClose_CheckedChanged;
             // 
@@ -188,7 +189,7 @@
             flowLayoutPanel1.Controls.Add(grpKillProcesses);
             flowLayoutPanel1.Location = new Point(12, 11);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(206, 678);
+            flowLayoutPanel1.Size = new Size(206, 598);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // grpCustomPrograms
@@ -201,17 +202,17 @@
             grpCustomPrograms.Controls.Add(txtCustomPrograms);
             grpCustomPrograms.Controls.Add(chkCustomPrograms);
             grpCustomPrograms.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            grpCustomPrograms.Location = new Point(3, 285);
+            grpCustomPrograms.Location = new Point(3, 243);
             grpCustomPrograms.MinimumSize = new Size(200, 0);
             grpCustomPrograms.Name = "grpCustomPrograms";
-            grpCustomPrograms.Size = new Size(200, 192);
+            grpCustomPrograms.Size = new Size(200, 178);
             grpCustomPrograms.TabIndex = 2;
             grpCustomPrograms.TabStop = false;
             grpCustomPrograms.Text = "Custom Programs";
             // 
             // btnCustomProgramsRemove
             // 
-            btnCustomProgramsRemove.Location = new Point(129, 73);
+            btnCustomProgramsRemove.Location = new Point(129, 70);
             btnCustomProgramsRemove.Name = "btnCustomProgramsRemove";
             btnCustomProgramsRemove.Size = new Size(65, 25);
             btnCustomProgramsRemove.TabIndex = 3;
@@ -223,17 +224,16 @@
             // 
             lstCustomPrograms.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             lstCustomPrograms.HorizontalScrollbar = true;
-            lstCustomPrograms.ItemHeight = 15;
-            lstCustomPrograms.Location = new Point(6, 104);
+            lstCustomPrograms.Location = new Point(6, 101);
             lstCustomPrograms.Name = "lstCustomPrograms";
             lstCustomPrograms.RightToLeft = RightToLeft.Yes;
-            lstCustomPrograms.Size = new Size(188, 64);
+            lstCustomPrograms.Size = new Size(188, 56);
             lstCustomPrograms.TabIndex = 4;
             // 
             // btnCustomProgramsAdd
             // 
             btnCustomProgramsAdd.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnCustomProgramsAdd.Location = new Point(6, 73);
+            btnCustomProgramsAdd.Location = new Point(6, 70);
             btnCustomProgramsAdd.Name = "btnCustomProgramsAdd";
             btnCustomProgramsAdd.Size = new Size(40, 25);
             btnCustomProgramsAdd.TabIndex = 2;
@@ -248,7 +248,7 @@
             txtCustomPrograms.Location = new Point(6, 44);
             txtCustomPrograms.Name = "txtCustomPrograms";
             txtCustomPrograms.PlaceholderText = "Path to .exe";
-            txtCustomPrograms.Size = new Size(181, 23);
+            txtCustomPrograms.Size = new Size(188, 20);
             txtCustomPrograms.TabIndex = 1;
             txtCustomPrograms.WordWrap = false;
             // 
@@ -261,10 +261,10 @@
             grpKillProcesses.Controls.Add(lstKillProcesses);
             grpKillProcesses.Controls.Add(txtKillProcesses);
             grpKillProcesses.Controls.Add(chkKillProcesses);
-            grpKillProcesses.Location = new Point(3, 483);
+            grpKillProcesses.Location = new Point(3, 427);
             grpKillProcesses.MinimumSize = new Size(200, 0);
             grpKillProcesses.Name = "grpKillProcesses";
-            grpKillProcesses.Size = new Size(200, 192);
+            grpKillProcesses.Size = new Size(200, 168);
             grpKillProcesses.TabIndex = 3;
             grpKillProcesses.TabStop = false;
             grpKillProcesses.Text = "Kill Processes";
@@ -272,7 +272,7 @@
             // btnKillProcessesAdd
             // 
             btnKillProcessesAdd.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnKillProcessesAdd.Location = new Point(6, 79);
+            btnKillProcessesAdd.Location = new Point(6, 70);
             btnKillProcessesAdd.Name = "btnKillProcessesAdd";
             btnKillProcessesAdd.Size = new Size(40, 25);
             btnKillProcessesAdd.TabIndex = 2;
@@ -282,7 +282,7 @@
             // 
             // btnKillProcessesRemove
             // 
-            btnKillProcessesRemove.Location = new Point(129, 79);
+            btnKillProcessesRemove.Location = new Point(129, 70);
             btnKillProcessesRemove.Name = "btnKillProcessesRemove";
             btnKillProcessesRemove.Size = new Size(65, 25);
             btnKillProcessesRemove.TabIndex = 3;
@@ -293,28 +293,28 @@
             // lstKillProcesses
             // 
             lstKillProcesses.FormattingEnabled = true;
-            lstKillProcesses.ItemHeight = 18;
-            lstKillProcesses.Location = new Point(6, 110);
+            lstKillProcesses.ItemHeight = 14;
+            lstKillProcesses.Location = new Point(6, 101);
             lstKillProcesses.Name = "lstKillProcesses";
-            lstKillProcesses.Size = new Size(188, 58);
+            lstKillProcesses.Size = new Size(188, 46);
             lstKillProcesses.TabIndex = 4;
             // 
             // txtKillProcesses
             // 
             txtKillProcesses.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtKillProcesses.Location = new Point(6, 51);
+            txtKillProcesses.Location = new Point(6, 44);
             txtKillProcesses.Name = "txtKillProcesses";
             txtKillProcesses.PlaceholderText = "Process name w/o .exe";
-            txtKillProcesses.Size = new Size(188, 23);
+            txtKillProcesses.Size = new Size(188, 20);
             txtKillProcesses.TabIndex = 1;
             // 
             // chkKillProcesses
             // 
             chkKillProcesses.AutoSize = true;
             chkKillProcesses.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
-            chkKillProcesses.Location = new Point(6, 24);
+            chkKillProcesses.Location = new Point(6, 21);
             chkKillProcesses.Name = "chkKillProcesses";
-            chkKillProcesses.Size = new Size(142, 21);
+            chkKillProcesses.Size = new Size(110, 17);
             chkKillProcesses.TabIndex = 0;
             chkKillProcesses.Text = "Kill Processes";
             chkKillProcesses.UseVisualStyleBackColor = true;
@@ -322,9 +322,9 @@
             // 
             // frmOptimal
             // 
-            AutoScaleDimensions = new SizeF(8F, 18F);
+            AutoScaleDimensions = new SizeF(7F, 14F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(232, 671);
+            ClientSize = new Size(234, 619);
             Controls.Add(flowLayoutPanel1);
             Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MaximizeBox = false;
@@ -368,5 +368,6 @@
         private ListBox lstKillProcesses;
         private Button btnKillProcessesAdd;
         private Button btnKillProcessesRemove;
+        private ToolTip toolTip1;
     }
 }
