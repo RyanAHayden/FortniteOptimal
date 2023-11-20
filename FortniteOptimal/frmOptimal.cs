@@ -4,178 +4,227 @@ using Microsoft.VisualBasic.ApplicationServices;
 using System.IO;
 using System.Reflection;
 using FortniteOptimal;
+using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Security.Principal;
+using System.ComponentModel;
 
 namespace FortniteOptimal
 {
     public partial class frmOptimal : Form
     {
-        //private string config = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\config.ini";
-        //private Dictionary<string, int> configValues = new();
-        //private Dictionary<string, CheckBox> configValueCheckBoxes = new();
-
-        private string fortniteConfigLocation = @"C:\" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + @"\Administrator\AppData\Local\FortniteGame\Saved\Config\WindowsClient";
-
+        private string gameConfig = Directory.GetCurrentDirectory() + @"\GameUserSettings\";
         private Config config = new Config();
 
         public frmOptimal()
         {
             InitializeComponent();
-
-            // test make more optimal v
-
-            if (config.UseCustomPrograms == 1)
-            {
-                chkCustomPrograms.Checked = true;
-            }
-
-            //config.AutoLaunch = 1;
-
+            SetValuesToConfig();
         }
 
         // start here
         private void SetValuesToConfig()
         {
+            if (config.AutoLaunch == 1)
+            {
+                EpicGamesLauncher.Launch();
+                if (config.AutoClose == 1) { Load += (s, e) => Close(); } // Close Immediately
+                chkLaunch.Checked = true;
+            }
+            if (config.AutoClose == 1)
+            {
+                chkClose.Checked = true;
+            }
+            if (config.UseCustomSettings == 1)
+            {
+                if (!Directory.Exists(gameConfig))
+                    Directory.CreateDirectory(gameConfig);
+                chkCustomSettings.Checked = true;
+                lstConfig.SelectedItem = config.CustomSetting; // Set selected config to the one previously selected
+
+            }
             if (config.UseCustomPrograms == 1)
             {
                 chkCustomPrograms.Checked = true;
             }
         }
 
-        //
-       // private CheckBox? CheckValue(int value)
-       // {
-       //     switch (value)
-       //     {
-       //         case :
-       //             return chkCustomPrograms;
-       //         default:
-       //             return null;
-       //     }
-       // }
-        private void btnLaunch_Click(object sender = null, EventArgs e = null)
+        // Set value given by checkbox and property
+        private void CheckClicked(CheckBox checkBox, PropertyInfo? setting)
+        {
+            if (setting != null)
+            {
+                if (checkBox.Checked)
+                {
+                    setting.SetValue(config, 1);
+                }
+                else
+                {
+                    setting.SetValue(config, 0);
+                }
+                config.Save();
+            }
+        }
+
+        private void btnLaunch_Click(object? sender = null, EventArgs? e = null)
         {
             if (chkCustomSettings.Checked == true)
             {
+                string chosenGameConfig = gameConfig + config.CustomSetting;
+                string fortniteConfigLocation = @"C:\Users\" + Environment.UserName + @"\AppData\Local\FortniteGame\Saved\Config\WindowsClient\";
 
+                if (File.Exists(chosenGameConfig))
+                {
+                    string bakFilePath = fortniteConfigLocation + "GameUserSettings.ini.bak";   // Check for backup GameUserSettings
+                    try
+                    {
+                        if (File.Exists(bakFilePath))
+                        {
+                            File.Delete(bakFilePath);
+                        }
+                        string originalConfig = fortniteConfigLocation + "GameUserSettings.ini";   // Check for GameUserSettings
+                        if (File.Exists(originalConfig))
+                        {
+                            File.Move(originalConfig, bakFilePath);
+                        }
+                        File.Copy(chosenGameConfig, fortniteConfigLocation + "GameUserSettings.ini");
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        MessageBox.Show("Unauthorized Access, need to run as Administrator: " + ex, "Authority Error");
+                    }
+                }
+                else
+                { MessageBox.Show("Unknown Config: " + config.CustomSetting, "Config Error"); }
+            }
+            if(chkCustomPrograms.Checked == true)
+            {
+                if (config.Programs.Count > 0)
+                {
+                    foreach (string program in config.Programs)
+                    {
+                        try
+                        {
+                            Process.Start(program);
+                        }
+                        catch (Exception ex)
+                        {
+                           MessageBox.Show("An error occurred while trying to open: " + ex.Message, "Program Error");
+                        }
+                    }
+                }
             }
             EpicGamesLauncher.Launch();
+            if (chkClose.Checked == true)
+            {
+                this.Close();
+            }
         }
 
         private void chkLaunch_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkLaunch.Checked == true)
-            {
-                config.AutoLaunch = 1;
-                config.Save();
-            }
-            else
-            {
-                config.AutoLaunch = 0;
-                config.Save();
-            }
-            //config.AutoLaunch = 1;
-            //SetValues("AutoLaunch", chkLaunch);
+            CheckClicked(chkLaunch, typeof(Config).GetProperty("AutoLaunch"));
         }
         private void chkClose_CheckedChanged(object sender, EventArgs e)
         {
-            //SetValues("AutoClose", chkClose);
-
+            CheckClicked(chkClose, typeof(Config).GetProperty("AutoClose"));
         }
         private void chkCustomSettings_CheckedChanged(object sender, EventArgs e)
         {
+            CheckClicked(chkCustomSettings, typeof(Config).GetProperty("UseCustomSettings"));
             //SetValues("UseCustomSettings", chkCustomSettings);
-            try
+
+            if (chkCustomSettings.Checked == true)
             {
-                string gameUsr = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\GameUserSettings\";
-                if (!Directory.Exists(gameUsr))
-                    Directory.CreateDirectory(gameUsr);
-
-
-                // Get all .ini files in the specified directory
-                string[] iniFiles = Directory.GetFiles(gameUsr, "*.ini");
-
-                // Check if there are any .ini files
-                if (iniFiles.Length > 0)
+                try
                 {
-                    // Populate the ListBox with the file names
-                    foreach (string iniFile in iniFiles)
+                    if (!Directory.Exists(gameConfig))
+                        Directory.CreateDirectory(gameConfig);
+
+                    // Get all .ini files in the specified directory
+                    string[] iniFiles = Directory.GetFiles(gameConfig, "*.ini");
+
+                    // Check if there are any .ini files
+                    if (iniFiles.Length > 0)
                     {
-                        // Add each file name to the ListBox
-                        lstConfig.Items.Add(Path.GetFileName(iniFile));
+                        // Populate the ListBox with the file names
+                        foreach (string iniFile in iniFiles)
+                        {
+                            // Add each file name to the ListBox
+                            lstConfig.Items.Add(Path.GetFileName(iniFile));
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No .ini files found in the directory.");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // No .ini files found
-                    MessageBox.Show("No .ini files found in the directory.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that may occur (e.g., directory not found, access denied)
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                    // Handle any exceptions that may occur (e.g., directory not found, access denied)
+                    MessageBox.Show($"An error occurred: {ex.Message}");
 
-            }
-            if (!chkCustomSettings.Checked)
-                lstConfig.Items.Clear();
-        }
-        private void chkCustomPrograms_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkCustomPrograms.Checked)
-            {
-                config.UseCustomPrograms = 1;
-                config.Save();
-                lstCustomPrograms.Enabled = true;
+                }
             }
             else
             {
-                config.UseCustomPrograms = 0;
-                config.Save();
-                lstCustomPrograms.Items.Clear();
-                lstCustomPrograms.Enabled = false;
+                lstConfig.Items.Clear();
             }
-            //
-            //SetValues("UseCustomPrograms", chkCustomPrograms);
+        }
+        private void chkCustomPrograms_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckClicked(chkCustomPrograms, typeof(Config).GetProperty("UseCustomPrograms"));
+            if (chkCustomPrograms.Checked)
+            {
+                if (config.Programs.Count > 0)
+                {
+                    foreach (string program in config.Programs)
+                    {
+                        lstCustomPrograms.Items.Add(program);
+                    }
+                }
+            }
+            else
+            { lstCustomPrograms.Items.Clear(); }
         }
         private void btnCustomProgramsAdd_Click(object sender, EventArgs e)
         {
-            // Assuming you have an instance of the Config class named 'config'
-            // (you might have created it earlier in your code)
-
-            // Add a custom program to the list
             config.Programs.Add(txtCustomPrograms.Text);
             config.Save();
             lstCustomPrograms.Items.Clear();
             txtCustomPrograms.Clear();
 
-            // Populate the ListBox with the updated list of programs
             foreach (string program in config.Programs)
             {
                 lstCustomPrograms.Items.Add(program);
             }
-
-            // config.Programs.Add(txtCustomPrograms.Text);
-            // config.Save();
-            // lstConfig.Items.Clear();
-            // foreach (string program in config.Programs)
-            // {
-            //     lstCustomPrograms.Items.Add(config.Programs);
-            // }
-            // Use a function to add the text in textbox (if its not null) to a seperate config exclusively for launching custom programs
         }
 
         private void btnCustomProgramsRemove_Click(object sender, EventArgs e)
         {
+            // remove selected program in custom program list
             string selectedProgram = lstCustomPrograms.Text;
             lstCustomPrograms.Items.Remove(selectedProgram);
             config.Programs.Remove(selectedProgram);
             config.Save();
-            // remove selected program in custom program list
         }
 
         private void lstConfig_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //lstConfig.Text
+            config.CustomSetting = lstConfig.Text;
+            config.Save();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            foreach (var process in Process.GetProcessesByName("FortniteClient-Win64-Shipping"))
+            {
+                process.Kill();
+            }
+            foreach (var process in Process.GetProcessesByName("FortniteLauncher"))
+            {
+                process.Kill();
+            }
         }
     }
 }

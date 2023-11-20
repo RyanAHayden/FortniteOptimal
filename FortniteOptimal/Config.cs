@@ -12,8 +12,9 @@ namespace FortniteOptimal
         public int AutoLaunch { get; set; }
         public int AutoClose { get; set; }
         public int UseCustomSettings { get; set; }
+        public string? CustomSetting { get; set; }
         public int UseCustomPrograms { get; set; }
-        public List<string> Programs { get; set; } = new List<string>();
+        public List<string>? Programs { get; set; } = new List<string>();
 
         private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
 
@@ -51,6 +52,7 @@ namespace FortniteOptimal
                 AutoLaunch = 0,
                 AutoClose = 0,
                 UseCustomSettings = 0,
+                CustomSetting = "",
                 UseCustomPrograms = 0,
                 Programs = new List<string>()
             };
@@ -73,8 +75,9 @@ namespace FortniteOptimal
             public int AutoLaunch { get; set; }
             public int AutoClose { get; set; }
             public int UseCustomSettings { get; set; }
+            public string? CustomSetting { get; set; }
             public int UseCustomPrograms { get; set; }
-            public List<string> Programs { get; set; }
+            public List<string>? Programs { get; set; }
         }
     }
 }
