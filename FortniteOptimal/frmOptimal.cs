@@ -21,8 +21,6 @@ namespace FortniteOptimal
             InitializeComponent();
             SetValuesToConfig();
         }
-
-        // start here
         private void SetValuesToConfig()
         {
             if (config.AutoLaunch == 1)
@@ -56,6 +54,22 @@ namespace FortniteOptimal
                 btnCustomProgramsAdd.Visible = false;
                 btnCustomProgramsRemove.Visible = false;
                 lstCustomPrograms.Visible = false;
+            }
+            if (config.KillProcesses == 1)
+            {
+                chkKillProcesses.Checked = true;
+                txtKillProcesses.Visible = true;
+                lstKillProcesses.Visible = true;
+                btnKillProcessesAdd.Visible = true;
+                btnKillProcessesRemove.Visible = true;
+            }
+            else
+            {
+                chkKillProcesses.Checked = false;
+                btnKillProcessesAdd.Visible = false;
+                btnKillProcessesRemove.Visible = false;
+                txtKillProcesses.Visible = false;
+                lstKillProcesses.Visible = false;
             }
         }
 
@@ -101,13 +115,13 @@ namespace FortniteOptimal
                     }
                     catch (UnauthorizedAccessException ex)
                     {
-                        MessageBox.Show("Unauthorized Access, need to run as Administrator: " + ex, "Authority Error");
+                        MessageBox.Show("Unauthorized Access, is your GameUserSettings read-only?\n " + ex, "Authority Error");
                     }
                 }
                 else
                 { MessageBox.Show("Unknown Config: " + config.CustomSetting, "Config Error"); }
             }
-            if(chkCustomPrograms.Checked == true)
+            if (chkCustomPrograms.Checked == true)
             {
                 if (config.Programs.Count > 0)
                 {
@@ -119,11 +133,34 @@ namespace FortniteOptimal
                         }
                         catch (Exception ex)
                         {
-                           MessageBox.Show("An error occurred while trying to open: " + ex.Message, "Program Error");
+                            MessageBox.Show("An error occurred while trying to open: " + ex.Message, "Program Error");
                         }
                     }
                 }
             }
+            if (chkKillProcesses.Checked == true)
+            {
+                if (config.Processes.Count > 0)
+                {
+                    foreach (string processToKill in config.Processes)
+                    {
+                        var processes = Process.GetProcessesByName(processToKill);
+                        if (processes.Length == 0)
+                        {
+                            MessageBox.Show("An error occurred while trying to kill process: " + processToKill, "Program Error");
+                        }
+                        else
+                        {
+                            foreach (var process in processes)
+                            {
+                                process.Kill();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                MessageBox.Show("No Processes To Kill.", "Error");
             EpicGamesLauncher.Launch();
             if (chkClose.Checked == true)
             {
@@ -167,7 +204,7 @@ namespace FortniteOptimal
                     }
                     else
                     {
-                        MessageBox.Show("No .ini files found in the directory.");
+                        MessageBox.Show(@"No .ini files found in the directory: ..\GameUserSettings\", "Custom Settings Error");
                     }
                 }
                 catch (Exception ex)
@@ -247,6 +284,55 @@ namespace FortniteOptimal
             {
                 process.Kill();
             }
+        }
+
+        private void chkKillProcesses_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckClicked(chkKillProcesses, typeof(Config).GetProperty("KillProcesses"));
+            if (chkKillProcesses.Checked)
+            {
+                txtKillProcesses.Visible = true;
+                lstKillProcesses.Visible = true;
+                btnKillProcessesAdd.Visible = true;
+                btnKillProcessesRemove.Visible = true;
+
+                if (config.Processes.Count > 0)
+                {
+                    foreach (string process in config.Processes)
+                    {
+                        lstKillProcesses.Items.Add(process);
+                    }
+                }
+            }
+            else
+            {
+                lstKillProcesses.Items.Clear();
+                btnKillProcessesAdd.Visible = false;
+                btnKillProcessesRemove.Visible = false;
+                txtKillProcesses.Visible = false;
+                lstKillProcesses.Visible = false;
+            }
+        }
+
+        private void btnKillProcessesAdd_Click(object sender, EventArgs e)
+        {
+            config.Processes.Add(txtKillProcesses.Text);
+            config.Save();
+            lstKillProcesses.Items.Clear();
+            txtKillProcesses.Clear();
+
+            foreach (string process in config.Processes)
+            {
+                lstKillProcesses.Items.Add(process);
+            }
+        }
+
+        private void btnKillProcessesRemove_Click(object sender, EventArgs e)
+        {
+            string selectedProcess = lstKillProcesses.Text;
+            lstKillProcesses.Items.Remove(selectedProcess);
+            config.Processes.Remove(selectedProcess);
+            config.Save();
         }
     }
 }

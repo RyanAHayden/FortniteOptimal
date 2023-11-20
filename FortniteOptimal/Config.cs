@@ -15,6 +15,8 @@ namespace FortniteOptimal
         public string? CustomSetting { get; set; }
         public int UseCustomPrograms { get; set; }
         public List<string>? Programs { get; set; } = new List<string>();
+        public int KillProcesses { get; set; }
+        public List<string>? Processes { get; set; } = new List<string>();
 
         private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
 
@@ -54,7 +56,9 @@ namespace FortniteOptimal
                 UseCustomSettings = 0,
                 CustomSetting = "",
                 UseCustomPrograms = 0,
-                Programs = new List<string>()
+                Programs = new List<string>(),
+                KillProcesses = 0,
+                Processes = new List<string>()
             };
 
             // Serialize the default configuration to JSON and write it to the file
@@ -77,7 +81,10 @@ namespace FortniteOptimal
             public int UseCustomSettings { get; set; }
             public string? CustomSetting { get; set; }
             public int UseCustomPrograms { get; set; }
-            public List<string>? Programs { get; set; }
+            public List<string> Programs { get; set; }
+            public int KillProcesses { get; set; }
+            public List<string> Processes { get; set; }
+            
         }
     }
 }
