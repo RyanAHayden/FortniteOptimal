@@ -20,6 +20,14 @@ namespace FortniteOptimal
         {
             InitializeComponent();
             SetValuesToConfig();
+            // Init tooltips
+            toolTip1.SetToolTip(btnLaunch, "Open Fortnite");
+            toolTip1.SetToolTip(btnClose, "Close Fortnite");
+            toolTip1.SetToolTip(chkLaunch, "Automatically launch Fortnite when opening this software");
+            toolTip1.SetToolTip(chkClose, "Automatically close this software when opening Fortnite");
+            toolTip1.SetToolTip(chkCustomSettings, @"Set Fortnite's GameUserSettings to specified config in ..\GameUserSettings\");
+            toolTip1.SetToolTip(chkCustomPrograms, "Automatically open specified programs when opening Fortnite");
+            toolTip1.SetToolTip(chkKillProcesses, "Automatically close specified processes when opening Fortnite");
         }
         private void SetValuesToConfig()
         {
