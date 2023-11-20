@@ -15,12 +15,14 @@ namespace FortniteOptimal
     {
         private string gameConfig = Directory.GetCurrentDirectory() + @"\GameUserSettings\";
         private Config config = new Config();
+        private bool ignoreErrors = false;
 
         public frmOptimal()
         {
             InitializeComponent();
             SetValuesToConfig();
-            // Init tooltips
+
+            // Set tooltips
             toolTip1.SetToolTip(btnLaunch, "Open Fortnite");
             toolTip1.SetToolTip(btnClose, "Close Fortnite");
             toolTip1.SetToolTip(chkLaunch, "Automatically launch Fortnite when opening this software");
@@ -28,6 +30,7 @@ namespace FortniteOptimal
             toolTip1.SetToolTip(chkCustomSettings, @"Set Fortnite's GameUserSettings to specified config in ..\GameUserSettings\");
             toolTip1.SetToolTip(chkCustomPrograms, "Automatically open specified programs when opening Fortnite");
             toolTip1.SetToolTip(chkKillProcesses, "Automatically close specified processes when opening Fortnite");
+            toolTip1.SetToolTip(chkKillProcessIgnore, "Don't popup errors for programs that can't be found");
         }
         private void SetValuesToConfig()
         {
@@ -58,13 +61,13 @@ namespace FortniteOptimal
             }
             else
             {
-                txtCustomPrograms.Visible = false;
                 btnCustomProgramsAdd.Visible = false;
                 btnCustomProgramsRemove.Visible = false;
                 lstCustomPrograms.Visible = false;
             }
             if (config.KillProcesses == 1)
             {
+                chkKillProcessIgnore.Visible = true;
                 chkKillProcesses.Checked = true;
                 txtKillProcesses.Visible = true;
                 lstKillProcesses.Visible = true;
@@ -73,6 +76,7 @@ namespace FortniteOptimal
             }
             else
             {
+                chkKillProcessIgnore.Visible = false;
                 chkKillProcesses.Checked = false;
                 btnKillProcessesAdd.Visible = false;
                 btnKillProcessesRemove.Visible = false;
@@ -155,7 +159,10 @@ namespace FortniteOptimal
                         var processes = Process.GetProcessesByName(processToKill);
                         if (processes.Length == 0)
                         {
-                            MessageBox.Show("An error occurred while trying to kill process: " + processToKill, "Program Error");
+                            if (!ignoreErrors)
+                            {
+                                MessageBox.Show("An error occurred while trying to kill process: " + processToKill, "Program Error");
+                            }
                         }
                         else
                         {
@@ -166,9 +173,14 @@ namespace FortniteOptimal
                         }
                     }
                 }
+                else
+                {
+                    if (!ignoreErrors)
+                    {
+                        MessageBox.Show("No Processes To Kill.", "Error");
+                    }
+                }
             }
-            else
-                MessageBox.Show("No Processes To Kill.", "Error");
             EpicGamesLauncher.Launch();
             if (chkClose.Checked == true)
             {
@@ -187,7 +199,6 @@ namespace FortniteOptimal
         private void chkCustomSettings_CheckedChanged(object sender, EventArgs e)
         {
             CheckClicked(chkCustomSettings, typeof(Config).GetProperty("UseCustomSettings"));
-            //SetValues("UseCustomSettings", chkCustomSettings);
 
             if (chkCustomSettings.Checked == true)
             {
@@ -219,7 +230,6 @@ namespace FortniteOptimal
                 {
                     // Handle any exceptions that may occur (e.g., directory not found, access denied)
                     MessageBox.Show($"An error occurred: {ex.Message}");
-
                 }
             }
             else
@@ -233,7 +243,7 @@ namespace FortniteOptimal
             CheckClicked(chkCustomPrograms, typeof(Config).GetProperty("UseCustomPrograms"));
             if (chkCustomPrograms.Checked)
             {
-                txtCustomPrograms.Visible = true;
+                //txtCustomPrograms.Visible = true;
                 btnCustomProgramsAdd.Visible = true;
                 btnCustomProgramsRemove.Visible = true;
                 lstCustomPrograms.Visible = true;
@@ -248,7 +258,6 @@ namespace FortniteOptimal
             else
             {
                 lstCustomPrograms.Items.Clear();
-                txtCustomPrograms.Visible = false;
                 btnCustomProgramsAdd.Visible = false;
                 btnCustomProgramsRemove.Visible = false;
                 lstCustomPrograms.Visible = false;
@@ -256,20 +265,31 @@ namespace FortniteOptimal
         }
         private void btnCustomProgramsAdd_Click(object sender, EventArgs e)
         {
-            config.Programs.Add(txtCustomPrograms.Text);
-            config.Save();
-            lstCustomPrograms.Items.Clear();
-            txtCustomPrograms.Clear();
-
-            foreach (string program in config.Programs)
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                lstCustomPrograms.Items.Add(program);
+                openFileDialog.Filter = "Executable Files (*.exe)|*.exe";
+                openFileDialog.Title = "Select an Executable File";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+
+                DialogResult result = openFileDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    config.Programs.Add(selectedFilePath);
+                    config.Save();
+                    lstCustomPrograms.Items.Clear();
+                    foreach (string program in config.Programs)
+                    {
+                        lstCustomPrograms.Items.Add(program);
+                    }
+                }
             }
         }
 
         private void btnCustomProgramsRemove_Click(object sender, EventArgs e)
         {
-            // remove selected program in custom program list
+            // remove selected program in program list
             string selectedProgram = lstCustomPrograms.Text;
             lstCustomPrograms.Items.Remove(selectedProgram);
             config.Programs.Remove(selectedProgram);
@@ -299,6 +319,7 @@ namespace FortniteOptimal
             CheckClicked(chkKillProcesses, typeof(Config).GetProperty("KillProcesses"));
             if (chkKillProcesses.Checked)
             {
+                chkKillProcessIgnore.Visible = true;
                 txtKillProcesses.Visible = true;
                 lstKillProcesses.Visible = true;
                 btnKillProcessesAdd.Visible = true;
@@ -315,6 +336,7 @@ namespace FortniteOptimal
             else
             {
                 lstKillProcesses.Items.Clear();
+                chkKillProcessIgnore.Visible = false;
                 btnKillProcessesAdd.Visible = false;
                 btnKillProcessesRemove.Visible = false;
                 txtKillProcesses.Visible = false;
@@ -341,6 +363,18 @@ namespace FortniteOptimal
             lstKillProcesses.Items.Remove(selectedProcess);
             config.Processes.Remove(selectedProcess);
             config.Save();
+        }
+
+        private void chkKillProcessIgnore_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkKillProcessIgnore.Checked)
+            {
+                ignoreErrors = true;
+            }
+            else
+            {
+                ignoreErrors = false;
+            }
         }
     }
 }
