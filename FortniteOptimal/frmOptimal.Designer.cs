@@ -51,10 +51,9 @@
             // 
             // lstConfig
             // 
-            lstConfig.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lstConfig.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
             lstConfig.FormattingEnabled = true;
-            lstConfig.Location = new Point(6, 49);
+            lstConfig.Location = new Point(6, 44);
             lstConfig.Name = "lstConfig";
             lstConfig.Size = new Size(188, 69);
             lstConfig.TabIndex = 1;
@@ -87,13 +86,17 @@
             // 
             // grpCustomSettings
             // 
+            grpCustomSettings.Anchor = AnchorStyles.Left;
+            grpCustomSettings.AutoSize = true;
             grpCustomSettings.Controls.Add(lstConfig);
             grpCustomSettings.Controls.Add(chkCustomSettings);
             grpCustomSettings.FlatStyle = FlatStyle.Flat;
             grpCustomSettings.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             grpCustomSettings.Location = new Point(3, 109);
+            grpCustomSettings.MaximumSize = new Size(200, 160);
+            grpCustomSettings.MinimumSize = new Size(200, 0);
             grpCustomSettings.Name = "grpCustomSettings";
-            grpCustomSettings.Size = new Size(200, 149);
+            grpCustomSettings.Size = new Size(200, 134);
             grpCustomSettings.TabIndex = 1;
             grpCustomSettings.TabStop = false;
             grpCustomSettings.Text = "Custom Settings";
@@ -170,28 +173,29 @@
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flowLayoutPanel1.AutoScroll = true;
             flowLayoutPanel1.AutoSize = true;
-            flowLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flowLayoutPanel1.Controls.Add(grpGame);
             flowLayoutPanel1.Controls.Add(grpCustomSettings);
             flowLayoutPanel1.Controls.Add(grpCustomPrograms);
             flowLayoutPanel1.Location = new Point(12, 11);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(206, 454);
+            flowLayoutPanel1.Size = new Size(206, 435);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // grpCustomPrograms
             // 
+            grpCustomPrograms.AutoSize = true;
+            grpCustomPrograms.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             grpCustomPrograms.Controls.Add(btnCustomProgramsRemove);
             grpCustomPrograms.Controls.Add(lstCustomPrograms);
             grpCustomPrograms.Controls.Add(btnCustomProgramsAdd);
             grpCustomPrograms.Controls.Add(txtCustomPrograms);
             grpCustomPrograms.Controls.Add(chkCustomPrograms);
             grpCustomPrograms.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            grpCustomPrograms.Location = new Point(3, 264);
+            grpCustomPrograms.Location = new Point(3, 249);
+            grpCustomPrograms.MinimumSize = new Size(200, 0);
             grpCustomPrograms.Name = "grpCustomPrograms";
-            grpCustomPrograms.Size = new Size(200, 187);
+            grpCustomPrograms.Size = new Size(200, 183);
             grpCustomPrograms.TabIndex = 2;
             grpCustomPrograms.TabStop = false;
             grpCustomPrograms.Text = "Custom Programs";
@@ -254,6 +258,7 @@
             grpGame.ResumeLayout(false);
             grpGame.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             grpCustomPrograms.ResumeLayout(false);
             grpCustomPrograms.PerformLayout();
             ResumeLayout(false);

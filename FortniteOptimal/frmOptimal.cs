@@ -41,11 +41,21 @@ namespace FortniteOptimal
                     Directory.CreateDirectory(gameConfig);
                 chkCustomSettings.Checked = true;
                 lstConfig.SelectedItem = config.CustomSetting; // Set selected config to the one previously selected
-
+            }
+            else
+            {
+                lstConfig.Visible = false;
             }
             if (config.UseCustomPrograms == 1)
             {
                 chkCustomPrograms.Checked = true;
+            }
+            else
+            {
+                txtCustomPrograms.Visible = false;
+                btnCustomProgramsAdd.Visible = false;
+                btnCustomProgramsRemove.Visible = false;
+                lstCustomPrograms.Visible = false;
             }
         }
 
@@ -136,6 +146,7 @@ namespace FortniteOptimal
 
             if (chkCustomSettings.Checked == true)
             {
+                lstConfig.Visible = true;
                 try
                 {
                     if (!Directory.Exists(gameConfig))
@@ -168,6 +179,7 @@ namespace FortniteOptimal
             }
             else
             {
+                lstConfig.Visible = false;
                 lstConfig.Items.Clear();
             }
         }
@@ -176,6 +188,10 @@ namespace FortniteOptimal
             CheckClicked(chkCustomPrograms, typeof(Config).GetProperty("UseCustomPrograms"));
             if (chkCustomPrograms.Checked)
             {
+                txtCustomPrograms.Visible = true;
+                btnCustomProgramsAdd.Visible = true;
+                btnCustomProgramsRemove.Visible = true;
+                lstCustomPrograms.Visible = true;
                 if (config.Programs.Count > 0)
                 {
                     foreach (string program in config.Programs)
@@ -185,7 +201,13 @@ namespace FortniteOptimal
                 }
             }
             else
-            { lstCustomPrograms.Items.Clear(); }
+            {
+                lstCustomPrograms.Items.Clear();
+                txtCustomPrograms.Visible = false;
+                btnCustomProgramsAdd.Visible = false;
+                btnCustomProgramsRemove.Visible = false;
+                lstCustomPrograms.Visible = false;
+            }
         }
         private void btnCustomProgramsAdd_Click(object sender, EventArgs e)
         {
