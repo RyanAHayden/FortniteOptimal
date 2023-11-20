@@ -16,6 +16,7 @@ namespace FortniteOptimal
         public int UseCustomPrograms { get; set; }
         public List<string>? Programs { get; set; } = new List<string>();
         public int KillProcesses { get; set; }
+        public int IgnoreErrors { get; set; }
         public List<string>? Processes { get; set; } = new List<string>();
 
         private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
@@ -58,6 +59,7 @@ namespace FortniteOptimal
                 UseCustomPrograms = 0,
                 Programs = new List<string>(),
                 KillProcesses = 0,
+                IgnoreErrors = 0,
                 Processes = new List<string>()
             };
 
@@ -83,6 +85,7 @@ namespace FortniteOptimal
             public int UseCustomPrograms { get; set; }
             public List<string> Programs { get; set; }
             public int KillProcesses { get; set; }
+            public int IgnoreErrors { get; set; }
             public List<string> Processes { get; set; }
             
         }

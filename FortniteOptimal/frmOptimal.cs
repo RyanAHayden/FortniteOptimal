@@ -77,11 +77,14 @@ namespace FortniteOptimal
             else
             {
                 chkKillProcessIgnore.Visible = false;
-                chkKillProcesses.Checked = false;
                 btnKillProcessesAdd.Visible = false;
                 btnKillProcessesRemove.Visible = false;
                 txtKillProcesses.Visible = false;
                 lstKillProcesses.Visible = false;
+            }
+            if (config.IgnoreErrors == 1)
+            {
+                chkKillProcessIgnore.Checked = true;
             }
         }
 
@@ -370,10 +373,14 @@ namespace FortniteOptimal
             if (chkKillProcessIgnore.Checked)
             {
                 ignoreErrors = true;
+                config.IgnoreErrors = 1;
+                config.Save();
             }
             else
             {
                 ignoreErrors = false;
+                config.IgnoreErrors = 0;
+                config.Save();
             }
         }
     }
