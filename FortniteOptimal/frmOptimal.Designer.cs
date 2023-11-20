@@ -133,7 +133,7 @@
             btnClose.Location = new Point(6, 52);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(188, 25);
-            btnClose.TabIndex = 3;
+            btnClose.TabIndex = 2;
             btnClose.Text = "Close";
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
@@ -159,7 +159,7 @@
             chkLaunch.Location = new Point(6, 83);
             chkLaunch.Name = "chkLaunch";
             chkLaunch.Size = new Size(114, 21);
-            chkLaunch.TabIndex = 1;
+            chkLaunch.TabIndex = 3;
             chkLaunch.Text = "Auto-Launch";
             chkLaunch.UseVisualStyleBackColor = true;
             chkLaunch.CheckedChanged += chkLaunch_CheckedChanged;
@@ -172,7 +172,7 @@
             chkClose.Location = new Point(6, 110);
             chkClose.Name = "chkClose";
             chkClose.Size = new Size(146, 21);
-            chkClose.TabIndex = 2;
+            chkClose.TabIndex = 4;
             chkClose.Text = "Auto-Close FNOP";
             chkClose.UseVisualStyleBackColor = true;
             chkClose.CheckedChanged += chkClose_CheckedChanged;
