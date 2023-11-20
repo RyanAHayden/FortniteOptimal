@@ -85,6 +85,7 @@
             // 
             chkCustomPrograms.AutoSize = true;
             chkCustomPrograms.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            chkCustomPrograms.ForeColor = SystemColors.ControlText;
             chkCustomPrograms.Location = new Point(6, 21);
             chkCustomPrograms.Name = "chkCustomPrograms";
             chkCustomPrograms.Size = new Size(116, 17);
@@ -188,6 +189,7 @@
             flowLayoutPanel1.Controls.Add(grpCustomPrograms);
             flowLayoutPanel1.Controls.Add(grpKillProcesses);
             flowLayoutPanel1.Location = new Point(12, 11);
+            flowLayoutPanel1.MinimumSize = new Size(206, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Size = new Size(206, 598);
             flowLayoutPanel1.TabIndex = 0;
@@ -261,6 +263,7 @@
             grpKillProcesses.Controls.Add(lstKillProcesses);
             grpKillProcesses.Controls.Add(txtKillProcesses);
             grpKillProcesses.Controls.Add(chkKillProcesses);
+            grpKillProcesses.ForeColor = SystemColors.ControlText;
             grpKillProcesses.Location = new Point(3, 427);
             grpKillProcesses.MinimumSize = new Size(200, 0);
             grpKillProcesses.Name = "grpKillProcesses";
@@ -312,6 +315,7 @@
             // 
             chkKillProcesses.AutoSize = true;
             chkKillProcesses.Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            chkKillProcesses.ForeColor = SystemColors.ControlText;
             chkKillProcesses.Location = new Point(6, 21);
             chkKillProcesses.Name = "chkKillProcesses";
             chkKillProcesses.Size = new Size(110, 17);
@@ -324,11 +328,13 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 14F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(234, 619);
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ClientSize = new Size(234, 616);
             Controls.Add(flowLayoutPanel1);
             Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MaximizeBox = false;
-            MinimumSize = new Size(250, 0);
+            MinimumSize = new Size(250, 480);
             Name = "frmOptimal";
             ShowIcon = false;
             Text = "FNOP";
