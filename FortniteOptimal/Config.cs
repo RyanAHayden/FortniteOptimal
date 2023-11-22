@@ -8,27 +8,20 @@ namespace FortniteOptimal
     public class Config
     {
         private const string ConfigFileName = "config.json";
+        private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
 
         public int AutoLaunch { get; set; }
         public int AutoClose { get; set; }
         public int UseCustomSettings { get; set; }
         public string? CustomSetting { get; set; }
         public int UseCustomPrograms { get; set; }
-        public List<string>? Programs { get; set; } = new List<string>();
+        public List<string> Programs { get; set; } = new List<string>();
         public int KillProcesses { get; set; }
         public int IgnoreErrors { get; set; }
-        public List<string>? Processes { get; set; } = new List<string>();
-
-        private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
+        public List<string> Processes { get; set; } = new List<string>();
 
         public Config()
         {
-            LoadConfig();
-        }
-
-        private void LoadConfig()
-        {
-            // Check if the config file exists
             if (File.Exists(configFilePath))
             {
                 // Load configuration from the file
@@ -76,6 +69,7 @@ namespace FortniteOptimal
             File.WriteAllText(configFilePath, json);
         }
 
+        // Need to have a default config to avoid an infinite loop
         private class DefaultConfig
         {
             public int AutoLaunch { get; set; }
@@ -83,11 +77,10 @@ namespace FortniteOptimal
             public int UseCustomSettings { get; set; }
             public string? CustomSetting { get; set; }
             public int UseCustomPrograms { get; set; }
-            public List<string> Programs { get; set; }
+            public List<string> Programs { get; set; } = new List<string>();
             public int KillProcesses { get; set; }
             public int IgnoreErrors { get; set; }
-            public List<string> Processes { get; set; }
-            
+            public List<string> Processes { get; set; } = new List<string>();
         }
     }
 }
