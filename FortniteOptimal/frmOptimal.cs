@@ -16,6 +16,7 @@ namespace FortniteOptimal
         private string gameConfig = Directory.GetCurrentDirectory() + @"\GameUserSettings\";
         private Config config = new Config();
         private bool ignoreErrors = false;
+        public bool ShouldQuit { get; set; }
 
         public frmOptimal()
         {
@@ -32,18 +33,10 @@ namespace FortniteOptimal
             toolTip1.SetToolTip(chkKillProcesses, "Automatically close specified processes when opening Fortnite");
             toolTip1.SetToolTip(chkKillProcessIgnore, "Don't popup errors for programs that can't be found");
         }
+
+        // Checks all current values given in config and sets them visibly
         private void SetValuesToConfig()
         {
-            if (config.AutoLaunch == 1)
-            {
-                EpicGamesLauncher.Launch();
-                if (config.AutoClose == 1) { Load += (s, e) => Close(); } // Close Immediately
-                chkLaunch.Checked = true;
-            }
-            if (config.AutoClose == 1)
-            {
-                chkClose.Checked = true;
-            }
             if (config.UseCustomSettings == 1)
             {
                 if (!Directory.Exists(gameConfig))
@@ -86,27 +79,34 @@ namespace FortniteOptimal
             {
                 chkKillProcessIgnore.Checked = true;
             }
+            if (config.AutoLaunch == 1)
+            {
+                btnLaunch_Click();
+                chkLaunch.Checked = true;
+            }
+            if (config.AutoClose == 1)
+            {
+                chkClose.Checked = true;
+            }
         }
 
-        // Set value given by checkbox and property
-        private void CheckClicked(CheckBox checkBox, PropertyInfo? setting)
+
+
+        // Set config's value given by checkbox, property, and config class
+        private void CheckClicked(CheckBox checkBox, PropertyInfo? setting, Config config)
         {
             if (setting != null)
-            {
-                if (checkBox.Checked)
-                {
-                    setting.SetValue(config, 1);
-                }
-                else
-                {
-                    setting.SetValue(config, 0);
-                }
+            { // Check if the checkBox is checked, if it is set the setting's value to 1, if not, set it to 0
+                setting.SetValue(config, checkBox.Checked ? 1 : 0);
                 config.Save();
             }
         }
 
         private void btnLaunch_Click(object? sender = null, EventArgs? e = null)
         {
+            // Settings checks
+
+            // Change the game's config to user-given config
             if (chkCustomSettings.Checked == true)
             {
                 string chosenGameConfig = gameConfig + config.CustomSetting;
@@ -136,23 +136,21 @@ namespace FortniteOptimal
                 else
                 { MessageBox.Show("Unknown Config: " + config.CustomSetting, "Config Error"); }
             }
+            // Launch user-given programs
             if (chkCustomPrograms.Checked == true)
             {
                 if (config.Programs.Count > 0)
                 {
                     foreach (string program in config.Programs)
                     {
-                        try
-                        {
-                            Process.Start(program);
-                        }
+                        try // Try to open the user-given program, catch any exceptions.
+                        { Process.Start(program); }
                         catch (Exception ex)
-                        {
-                            MessageBox.Show("An error occurred while trying to open: " + ex.Message, "Program Error");
-                        }
+                        { MessageBox.Show("An error occurred while trying to open: " + ex.Message, "Program Error"); }
                     }
                 }
             }
+            // Kill user-given programs
             if (chkKillProcesses.Checked == true)
             {
                 if (config.Processes.Count > 0)
@@ -184,25 +182,42 @@ namespace FortniteOptimal
                     }
                 }
             }
+            // Launch
             EpicGamesLauncher.Launch();
-            if (chkClose.Checked == true)
+            // Close program if Auto-Close is enabled
+            if (config.AutoClose == 1)
             {
                 this.Close();
             }
         }
 
+        // End Fortnite's processes
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            foreach (var process in Process.GetProcessesByName("FortniteClient-Win64-Shipping"))
+            {
+                process.Kill();
+            }
+            foreach (var process in Process.GetProcessesByName("FortniteLauncher"))
+            {
+                process.Kill();
+            }
+        }
+
         private void chkLaunch_CheckedChanged(object sender, EventArgs e)
         {
-            CheckClicked(chkLaunch, typeof(Config).GetProperty("AutoLaunch"));
+            CheckClicked(chkLaunch, typeof(Config).GetProperty("AutoLaunch"), config);
         }
         private void chkClose_CheckedChanged(object sender, EventArgs e)
         {
-            CheckClicked(chkClose, typeof(Config).GetProperty("AutoClose"));
+            CheckClicked(chkClose, typeof(Config).GetProperty("AutoClose"), config);
         }
+
         private void chkCustomSettings_CheckedChanged(object sender, EventArgs e)
         {
-            CheckClicked(chkCustomSettings, typeof(Config).GetProperty("UseCustomSettings"));
+            CheckClicked(chkCustomSettings, typeof(Config).GetProperty("UseCustomSettings"), config);
 
+            // Show the user's custom configs in \GameUserSettings\
             if (chkCustomSettings.Checked == true)
             {
                 lstConfig.Visible = true;
@@ -243,10 +258,9 @@ namespace FortniteOptimal
         }
         private void chkCustomPrograms_CheckedChanged(object sender, EventArgs e)
         {
-            CheckClicked(chkCustomPrograms, typeof(Config).GetProperty("UseCustomPrograms"));
+            CheckClicked(chkCustomPrograms, typeof(Config).GetProperty("UseCustomPrograms"), config);
             if (chkCustomPrograms.Checked)
             {
-                //txtCustomPrograms.Visible = true;
                 btnCustomProgramsAdd.Visible = true;
                 btnCustomProgramsRemove.Visible = true;
                 lstCustomPrograms.Visible = true;
@@ -289,37 +303,26 @@ namespace FortniteOptimal
                 }
             }
         }
-
         private void btnCustomProgramsRemove_Click(object sender, EventArgs e)
         {
-            // remove selected program in program list
+            // Remove selected program in program list
             string selectedProgram = lstCustomPrograms.Text;
             lstCustomPrograms.Items.Remove(selectedProgram);
-            config.Programs.Remove(selectedProgram);
-            config.Save();
+            if (config.Programs.Remove(selectedProgram)) { config.Save(); }
+
         }
 
+        // Set custom config based on user selection
         private void lstConfig_SelectedIndexChanged(object sender, EventArgs e)
         {
             config.CustomSetting = lstConfig.Text;
             config.Save();
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            foreach (var process in Process.GetProcessesByName("FortniteClient-Win64-Shipping"))
-            {
-                process.Kill();
-            }
-            foreach (var process in Process.GetProcessesByName("FortniteLauncher"))
-            {
-                process.Kill();
-            }
-        }
 
         private void chkKillProcesses_CheckedChanged(object sender, EventArgs e)
         {
-            CheckClicked(chkKillProcesses, typeof(Config).GetProperty("KillProcesses"));
+            CheckClicked(chkKillProcesses, typeof(Config).GetProperty("KillProcesses"), config);
             if (chkKillProcesses.Checked)
             {
                 chkKillProcessIgnore.Visible = true;
