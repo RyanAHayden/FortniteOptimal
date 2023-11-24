@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOptimal));
             lstConfig = new ListBox();
             chkCustomSettings = new CheckBox();
             chkCustomPrograms = new CheckBox();
@@ -334,10 +335,10 @@
             ClientSize = new Size(234, 616);
             Controls.Add(flowLayoutPanel1);
             Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimumSize = new Size(250, 520);
             Name = "frmOptimal";
-            ShowIcon = false;
             Text = "FNOP";
             grpCustomSettings.ResumeLayout(false);
             grpCustomSettings.PerformLayout();
