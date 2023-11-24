@@ -16,6 +16,7 @@ namespace FortniteOptimal
         private string gameConfig = Directory.GetCurrentDirectory() + @"\GameUserSettings\";
         private Config config = new Config();
         private bool ignoreErrors = false;
+        public bool ShouldQuit { get; set; }
 
         public frmOptimal()
         {
@@ -36,16 +37,6 @@ namespace FortniteOptimal
         // Checks all current values given in config and sets them visibly
         private void SetValuesToConfig()
         {
-            if (config.AutoLaunch == 1)
-            {
-                EpicGamesLauncher.Launch();
-                if (config.AutoClose == 1) { Load += (s, e) => Close(); } // Close Immediately
-                chkLaunch.Checked = true;
-            }
-            if (config.AutoClose == 1)
-            {
-                chkClose.Checked = true;
-            }
             if (config.UseCustomSettings == 1)
             {
                 if (!Directory.Exists(gameConfig))
@@ -88,7 +79,18 @@ namespace FortniteOptimal
             {
                 chkKillProcessIgnore.Checked = true;
             }
+            if (config.AutoLaunch == 1)
+            {
+                btnLaunch_Click();
+                chkLaunch.Checked = true;
+            }
+            if (config.AutoClose == 1)
+            {
+                chkClose.Checked = true;
+            }
         }
+
+
 
         // Set config's value given by checkbox, property, and config class
         private void CheckClicked(CheckBox checkBox, PropertyInfo? setting, Config config)
@@ -183,8 +185,10 @@ namespace FortniteOptimal
             // Launch
             EpicGamesLauncher.Launch();
             // Close program if Auto-Close is enabled
-            if (chkClose.Checked == true)
-            { this.Close(); }
+            if (config.AutoClose == 1)
+            {
+                this.Close();
+            }
         }
 
         // End Fortnite's processes

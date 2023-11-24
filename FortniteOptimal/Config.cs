@@ -5,10 +5,11 @@ using System.IO;
 
 namespace FortniteOptimal
 {
-    public class Config
+    public class Config : IDisposable
     {
         private const string ConfigFileName = "config.json";
         private string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
+        private bool disposed = false;
 
         public int AutoLaunch { get; set; }
         public int AutoClose { get; set; }
@@ -25,18 +26,43 @@ namespace FortniteOptimal
             if (File.Exists(configFilePath))
             {
                 // Load configuration from the file
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile(ConfigFileName, optional: false, reloadOnChange: true)
-                    .Build();
+                using (var stream = new FileStream(ConfigFileName, FileMode.Open, FileAccess.Read))
+                {
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonStream(stream)
+                        .Build();
 
-                // Bind configuration values to the properties of the Config class
-                configuration.Bind(this);
+                    // Bind configuration values to the properties of the Config class
+                    configuration.Bind(this);
+                }
             }
             else
             {
                 // If the config file doesn't exist, create a default one
                 CreateDefaultConfig(configFilePath);
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed resources (if any)
+                    // For example, close any open streams or release other managed objects
+                }
+
+                // Dispose unmanaged resources (if any)
+                // For example, close a native resource or release unmanaged memory
+
+                disposed = true;
             }
         }
 
@@ -66,7 +92,11 @@ namespace FortniteOptimal
             var json = JsonConvert.SerializeObject(this, Formatting.Indented);
 
             // Write the JSON to the config file
-            File.WriteAllText(configFilePath, json);
+            using (var stream = new FileStream(ConfigFileName, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(json);
+            }
         }
 
         // Need to have a default config to avoid an infinite loop
@@ -80,7 +110,7 @@ namespace FortniteOptimal
             public List<string> Programs { get; set; } = new List<string>();
             public int KillProcesses { get; set; }
             public int IgnoreErrors { get; set; }
-            public List<string> Processes { get; set; } = new List<string>();
+             public List<string> Processes { get; set; } = new List<string>();
         }
     }
 }
